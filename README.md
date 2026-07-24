@@ -1,10 +1,14 @@
-# Navi — Telegram bot for channel navigation
+*English · [Русский](README.ru.md)*
+
+# Navi: Telegram bot for channel navigation
 
 Telegram bot that indexes the posts of a single channel and provides navigation
 over them: fixed-category browsing, full-text search and paginated access to the
 archive through an inline-button interface.
 
-The bot is tailored to one specific channel — categories and the greeting are
+## Overview
+
+The bot is tailored to one specific channel: categories and the greeting are
 adapted to its topic; it is not a generic template.
 
 ## Features
@@ -22,14 +26,14 @@ adapted to its topic; it is not a generic template.
 A single process runs everything in one asyncio event loop: the HTTP server, the
 Telegram bot and the background refresh task. It runs in webhook mode.
 
-- **HTTP server (`aiohttp`)** — serves `POST /webhook` for Telegram updates and
+- **HTTP server (`aiohttp`)**: serves `POST /webhook` for Telegram updates and
   `GET /` as a health check.
-- **`python-telegram-bot` (v20)** — command and callback-query handling.
-- **Telethon** — asynchronous fetching of channel history and metadata via a user
+- **`python-telegram-bot` (v20)**: command and callback-query handling.
+- **Telethon**: asynchronous fetching of channel history and metadata via a user
   session (`StringSession`).
-- **Background task (`asyncio`)** — periodic re-fetch of the post index every
+- **Background task (`asyncio`)**: periodic re-fetch of the post index every
   30 minutes.
-- **In-memory index** — posts are kept in a module-level list; there is no
+- **In-memory index**: posts are kept in a module-level list; there is no
   database, so the index is rebuilt on each start.
 
 On free-tier hosting the instance sleeps when idle and cold-starts in about
@@ -49,7 +53,29 @@ Set via environment variables (required unless noted):
 | `PORT` | HTTP port (default `8080`) |
 | `FETCH_LIMIT` | Max posts fetched per refresh (default `500`) |
 
-## Run
+## Repository structure
+
+```
+.
+├── worker.py            bot, HTTP server and background refresh task
+├── Procfile             process declaration for the host
+├── runtime.txt          Python version for the host
+├── requirements.txt
+├── .gitignore
+├── LICENSE
+├── README.md
+└── README.ru.md
+```
+
+## Stack
+
+- Python 3.11
+- python-telegram-bot 20.7
+- Telethon 1.28.5
+- aiohttp 3.9.1
+- Deployment: Render (webhook mode)
+
+## Running
 
 ```bash
 pip install -r requirements.txt
@@ -60,10 +86,6 @@ python worker.py
 registers its webhook at `https://<RENDER_EXTERNAL_HOSTNAME>/webhook` and loads an
 initial batch of posts.
 
-## Stack
+## License
 
-- Python 3.11
-- python-telegram-bot 20.7
-- Telethon 1.28.5
-- aiohttp 3.9.1
-- Deployment: Render (webhook mode)
+MIT, see [LICENSE](LICENSE).
